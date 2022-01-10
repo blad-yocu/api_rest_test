@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use NunoMaduro\Collision\Contracts\Writer;
 use PHPUnit\Util\Json;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Http;
 
 class ColaboratorController extends Controller
 {
@@ -20,18 +22,15 @@ class ColaboratorController extends Controller
 
     public function __construct()
     {
-        $this->api_key = env('API_KEY_PUBLIC');
-        $this->api_private = env('API_KEY_PRIVATE');
-        $this->ts = env('TS');
+        $this->api_key = config('app.api_key_public');
+        $this->api_private = config('app.api_key_private');
+        $this->ts = config('app.ts');
         $this->hash = md5($this->ts . $this->api_private . $this->api_key);
     }
     public function getApi($url)
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = json_decode(curl_exec($ch));
-        curl_close($ch);
+        $response = Http::get($url);
+        return json_decode($response);
         return $response;
     }
     public function index($character = '', $type = 'name')
@@ -40,9 +39,18 @@ class ColaboratorController extends Controller
             if (empty($character)) {
                 $url = 'http://gateway.marvel.com/v1/public/characters?ts=' . $this->ts . '&apikey=' . $this->api_key . '&hash=' . $this->hash . '';
                 $response = $this->getApi($url);
-                return $response;
+                if ($response->code == 200) {
+                    if (!empty($response->data->results)) {
+                        $data = collect($response->data->results);
+                        $data = $data->pluck('name');
+                        return $data;
+                    } else {
+                        return response()->json(['message' => 'Sin resultados'], 409);
+                    }
+                } else {
+                    return response()->json(['message' => 'Recurso no encontrado'], 404);
+                }
             } else {
-
 
                 $character = str_replace(" ", "%20", trim($character));
                 $url = 'http://gateway.marvel.com/v1/public/characters?ts=' . $this->ts . '&apikey=' . $this->api_key . '&hash=' . $this->hash . '&' . $type . '=' . ($character);
@@ -83,7 +91,7 @@ class ColaboratorController extends Controller
                         return $colaborators;
                     } else {
                         //encaso de que no hay resultados
-                        return response()->json(['message' => 'No se encontro resultados '], 404);
+                        return response()->json(['message' => 'No se encontro resultados '], 204);
                     }
                 } else {
                     return response()->json(['message' => 'Recurso no encontrado'], 404);
@@ -155,6 +163,7 @@ class ColaboratorController extends Controller
             }
         } catch (\Throwable $th) {
             //throw $th;
+            return response()->json(['message' => 'Error en la peticion rest, validar parametros', 'code' => 409], 409);
         }
     }
 }

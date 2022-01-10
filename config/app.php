@@ -15,6 +15,12 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'api_key_public' => env('API_KEY_PUBLIC', 'public'),
+
+    'api_key_private' => env('API_KEY_PRIVATE', 'private'),
+
+    'ts' => env('TS', '1'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
