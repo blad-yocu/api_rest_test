@@ -8,7 +8,7 @@ copy .env.example .env
 
 ## Genera la key de laravel con el siguiente comando
 
-php artisan generate:key
+php artisan key:generate
 
 ## Coloca tus claves en el alchivo .env de Marvel Comics API information (https://developer.marvel.com):
 
