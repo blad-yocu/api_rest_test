@@ -1,0 +1,32 @@
+body {
+    width: 90%;
+    margin: 0 auto;
+    font-size: 1.6rem;
+    line-height: 1.5;
+}
+
+.main-menu {
+    background-color: gray;
+    padding: 2rem;
+    display: flex;
+    justify-content: space-around;
+    gap: 2rem;
+}
+.main-menu a {
+    text-decoration: none;
+    color: beige;
+    font-size: 1rem;
+}
+.content {
+    padding: 0 0.5rem;
+    background-color: brown;
+    display: grid;
+    grid-template-columns: 30% 70%;
+}
+.content-lateral {
+    background-color: cadetblue;
+}
+.content-section {
+    background-color: rgb(71, 89, 148);
+    min-width: 250px;
+}

@@ -7,6 +7,7 @@ use NunoMaduro\Collision\Contracts\Writer;
 use PHPUnit\Util\Json;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
+use App\Traits\ApiResponser;
 
 class ColaboratorController extends Controller
 {
@@ -15,6 +16,8 @@ class ColaboratorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    use ApiResponser;
+
     protected $api_key;
     protected $api_private;
     protected $ts;
@@ -33,7 +36,11 @@ class ColaboratorController extends Controller
         return json_decode($response);
         return $response;
     }
-    public function index($character = '', $type = 'name')
+
+    public function index()
+    {
+    }
+    public function colaborators($character = '', $type = 'name')
     {
         try {
             if (empty($character)) {
@@ -43,12 +50,12 @@ class ColaboratorController extends Controller
                     if (!empty($response->data->results)) {
                         $data = collect($response->data->results);
                         $data = $data->pluck('name');
-                        return $data;
+                        return $this->successResponse($data, 200);
                     } else {
-                        return response()->json(['message' => 'Sin resultados'], 409);
+                        return $this->errorResponse('Sin resultados', 409);
                     }
                 } else {
-                    return response()->json(['message' => 'Recurso no encontrado'], 404);
+                    return $this->errorResponse('Recurso no encontrado', 404);
                 }
             } else {
 
@@ -88,18 +95,18 @@ class ColaboratorController extends Controller
                             'editors' => $editors,
                             'writers' => $writers
                         ];
-                        return $colaborators;
+                        return $this->successResponse($colaborators, 200);
                     } else {
                         //encaso de que no hay resultados
-                        return response()->json(['message' => 'No se encontro resultados '], 204);
+                        return $this->errorResponse('No se encontro resultados ', 204);
                     }
                 } else {
-                    return response()->json(['message' => 'Recurso no encontrado'], 404);
+                    return $this->errorResponse('Recurso no encontrado', 404);
                 }
             }
         } catch (\Throwable $th) {
             //throw $th;
-            return response()->json(['message' => 'Error en la peticion rest, validar parametros', 'code' => 409], 409);
+            return $this->errorResponse('Error en la peticion rest, validar parametros', 500);
         }
     }
 

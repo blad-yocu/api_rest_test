@@ -18,5 +18,5 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::get('/colaborators/{character?}/{type?}', [ColaboratorController::class, 'index']);
+Route::get('/colaborators/{character?}/{type?}', [ColaboratorController::class, 'colaborators']);
 Route::get('/characters/{character?}/{type?}', [ColaboratorController::class, 'characters']);

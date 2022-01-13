@@ -21,13 +21,22 @@
         </style>
     </head>
     <body class="antialiased">
-        <div>
+        <div class="header">
             <h2>En Desarrollo de Api:</h2>
         </div>
-        <div>
-            <ul>
-                <li></li>
-            </ul>
+        <div class="main" >
+            <div class="lateral">
+                <ul>
+                    <li></li>
+                </ul>
+            </div>
+            <div class="contenido">
+
+            </div>
         </div>
+
+        <footer>
+            
+        </footer>
     </body>
 </html>
